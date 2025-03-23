@@ -38,17 +38,17 @@ This project leverages the following technologies:
 
 The backend exposes the following endpoints:
 
-| Method | Endpoint                             | Description                |
-| ------ | ------------------------------------ | -------------------------- |
-| POST   | `/api/v1/user/register`              | Register a new user        |
-| GET    | `/api/v1/user/verify/:token`         | Verify user email          |
-| POST   | `/api/v1/user/login`                 | User login                 |
-| POST   | `/api/v1/user/logout`                | User logout                |
-| POST   | `/api/v1/user/forgot-password`       | Initiate password reset    |
-| POST   | `/api/v1/user/reset-password/:token` | Reset user password        |
-| GET    | `/api/v1/user/profile`               | Retrieve user profile data |
+| Method | Endpoint                                     | Description                |
+| ------ | -------------------------------------------- | -------------------------- |
+| POST   | `BASE_URL/api/v1/user/register`              | Register a new user        |
+| GET    | `BASE_URL/api/v1/user/verify/:token`         | Verify user email          |
+| POST   | `BASE_URL/api/v1/user/login`                 | User login                 |
+| GET    | `BASE_URL/api/v1/user/logout`                | User logout                |
+| POST   | `BASE_URL/api/v1/user/forgot-password`       | Initiate password reset    |
+| POST   | `BASE_URL/api/v1/user/reset-password/:token` | Reset user password        |
+| GET    | `BASE_URL/api/v1/user/profile`               | Retrieve user profile data |
 
----
+**Note**: Define BASE_URL (e.g. `http://localhost:3000`, your domain, etc) in .env
 
 ### 🚀 Getting Started
 
