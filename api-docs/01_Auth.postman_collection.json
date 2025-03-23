@@ -1,0 +1,148 @@
+{
+  "info": {
+    "_postman_id": "25c18bba-2116-4926-a76b-6d7eef5a33f4",
+    "name": "01_Auth",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40109762"
+  },
+  "item": [
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"<name>\",\r\n    \"email\": \"<email>\",\r\n    \"password\": \"<password>\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/user/register",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "user", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"<email>\",\r\n    \"password\": \"<password>\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/user/login",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "user", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "verify",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/user/verify/<verification_token>",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "user", "verify", "<verification_token>"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/user/logout",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "user", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/user/profile",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "user", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "forgot password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"<email>\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/user/forgotPassword",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "user", "forgotPassword"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "reset password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"newPassword\" : <new_password>,\r\n    \"conformPassword\" : <conform_new_password>\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/user/resetPassword/<reset_token>",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "user", "resetPassword", "<reset_token>"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "<BASE_URL>"
+    }
+  ]
+}

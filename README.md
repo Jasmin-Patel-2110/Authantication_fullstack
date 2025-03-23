@@ -79,6 +79,48 @@ The server will run on `http://localhost:3000` by default.
 
 ---
 
+### 📡 API Documentation with Postman
+
+To make testing the API easier, I’ve included a **Postman Collection** with all the available endpoints. You can import it into Postman and test the API directly.
+
+**Note**: setup mailtrap for using or testing verification and reset password functionality. Also, make sure to update the credentials in `.env`.
+
+#### 🔥 **How to Use the Collection**
+
+1. **Download the Collection File:**
+
+   - Grab the collection file from the GitHub repository:  
+     [`api-docs/01_Auth.postman_collection.json`](https://github.com/Jasmin-Patel-2110/backend-projects/tree/main/api-docs/01_Auth.postman_collection.json)
+
+2. **Import the Collection in Postman:**
+
+   - Open Postman.
+   - Click on `Import` in the top left corner.
+   - Upload the `collection.json` file or paste the public link.
+
+3. **Set Up Environment Variables:**  
+   To make testing smoother, set these variables in Postman:
+
+   ```bash
+   BASE_URL = <your-base-url>
+   ```
+
+4. **Run and Test the API!** 🚀
+
+---
+
+### 📄 **Endpoints Included in the Collection**
+
+- **User Registration:** `BASE_URL/api/v1/user/register`
+- **Email Verification:** `BASE_URL/api/v1/user/verify/:token`
+- **User Login:** `BASE_URL/api/v1/user/login`
+- **User Logout:** `BASE_URL/api/v1/user/logout`
+- **Password Reset Initiation:** `BASE_URL/api/v1/user/forgot-password`
+- **Password Reset Confirmation:** `BASE_URL/api/v1/user/reset-password/:token`
+- **Get User Profile:** `BASE_URL/api/v1/user/profile`
+
+---
+
 ### ⚡ Notes
 
 - Ensure MongoDB is running locally or remotely and accessible before starting the server.
