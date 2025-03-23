@@ -51,7 +51,15 @@ const registerUser = async (req, res) => {
       to: user.email, // list of receivers
       subject: "Verify your Email",
       text: "Please click on the following link - ",
-      html: `${process.env.BASE_URL}/api/v1/user/verify/${user.verificationToken}`,
+      html: `
+      Verification Link: ${process.env.BASE_URL}/api/v1/user/resetPassword/${user.verificationToken}
+      <br>
+      Verification Token: ${user.verificationToken}
+      <br>
+      Verification token(link) will expire in 10 minutes.
+      <br>
+      <b>This is a testing email, not for production use.</b>
+      `,
     };
 
     await transporter.sendMail(mailOptions);
@@ -239,7 +247,15 @@ const forgotPassword = async (req, res) => {
       to: user.email, // list of receivers
       subject: "Verify your Password Reset",
       text: "Please click on the following link - ",
-      html: `${process.env.BASE_URL}/api/v1/user/resetPassword/${user.passwordResetToken}`,
+      html: `
+      Verification Link: ${process.env.BASE_URL}/api/v1/user/resetPassword/${user.passwordResetToken}
+      <br>
+      Verification Token: ${user.passwordResetToken}
+      <br>
+      Verification token(link) will expire in 10 minutes.
+      <br>
+      <b>This is a testing email, not for production use.</b>
+      `,
     };
 
     transporter.sendMail(mailOptions);
@@ -362,7 +378,9 @@ const profile = async (req, res) => {
       });
     }
 
-    const user = await User.findById(userId).select("-_id -password -passwordResetToken -passwordResetExpiry -verificationToken");
+    const user = await User.findById(userId).select(
+      "-_id -password -passwordResetToken -passwordResetExpiry -verificationToken"
+    );
 
     if (!user) {
       return res.status(400).json({
