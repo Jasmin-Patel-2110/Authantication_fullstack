@@ -27,6 +27,10 @@ const registerUser = async (req, res) => {
       });
     }
 
+    name.trim();
+    email.trim();
+    password.trim();
+
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -52,12 +56,12 @@ const registerUser = async (req, res) => {
       subject: "Verify your Email",
       text: "Please click on the following link - ",
       html: `
-      Verification Link: ${process.env.BASE_URL}/api/v1/user/resetPassword/${user.verificationToken}
-      <br>
+      Verification Link: ${process.env.BASE_URL}/api/v1/user/verify/${user.verificationToken}
+      </br>
       Verification Token: ${user.verificationToken}
-      <br>
+      </br>
       Verification token(link) will expire in 10 minutes.
-      <br>
+      </br>
       <b>This is a testing email, not for production use.</b>
       `,
     };
@@ -91,6 +95,9 @@ const verifyUser = async (req, res) => {
 
   try {
     const { token } = req.params;
+
+    token.trim();
+    // console.log(token);
 
     if (!token) {
       return res.status(400).json({
@@ -132,9 +139,10 @@ const loginUser = async (req, res) => {
     2. check if user exist with that email
     3. check if user is verified
     4. check if password is correct
-    5. create jwt token
-    6. create cookie
-    7. send response
+    5. generate accessToken and refreshToken
+    6. store accessToken and refreshToken in cookies and refreshToken in user
+    7. save user in db
+    8. send success status to user
   */
 
   try {
@@ -145,6 +153,9 @@ const loginUser = async (req, res) => {
         message: "Invalid email or password",
       });
     }
+
+    email.trim();
+    password.trim();
 
     const user = await User.findOne({ email });
 
@@ -168,29 +179,47 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const jwtToken = jwt.sign(
-      {
-        id: user._id,
-        role: user.role,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: process.env.JWT_EXPIRY,
-      }
+    // const jwtToken = jwt.sign(
+    //   {
+    //     id: user._id,
+    //     role: user.role,
+    //   },
+    //   process.env.JWT_SECRET,
+    //   {
+    //     expiresIn: process.env.JWT_EXPIRY,
+    //   }
+    // );
+
+    const refreshToken = jwt.sign(
+      { id: user._id },
+      process.env.REFRESHTOKEN_SECRET,
+      { expiresIn: process.env.REFRESHTOKEN_EXPIRY }
     );
+
+    user.refreshToken = refreshToken;
+
+    const accessToken = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.ACCESSTOKEN_SECRET,
+      { expiresIn: process.env.ACCESSTOKEN_EXPIRY }
+    );
+
+    await user.save();
 
     const cookieOptions = {
       httpOnly: true,
       secure: true,
-      maxAge: 24 * 60 * 60 * 1000, // in milliseconds
+      // maxAge: 24 * 60 * 60 * 1000, // in milliseconds
     };
 
-    res.cookie("token", jwtToken, cookieOptions);
+    // res.cookie("token", jwtToken, cookieOptions);
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     return res.status(201).json({
       message: "User logged in successfully",
       success: true,
-      token: jwtToken,
+      token: { accessToken, refreshToken },
       user: {
         id: user._id,
         name: user.name,
@@ -226,6 +255,8 @@ const forgotPassword = async (req, res) => {
       });
     }
 
+    email.trim();
+
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -249,18 +280,18 @@ const forgotPassword = async (req, res) => {
       text: "Please click on the following link - ",
       html: `
       Verification Link: ${process.env.BASE_URL}/api/v1/user/resetPassword/${user.passwordResetToken}
-      <br>
-      Verification Token: ${user.passwordResetToken}
-      <br>
-      Verification token(link) will expire in 10 minutes.
-      <br>
+      </br>
+      password Reset Token: ${user.passwordResetToken}
+      </br>
+      password Reset token(link) will expire in 10 minutes.
+      </br>
       <b>This is a testing email, not for production use.</b>
       `,
     };
 
     transporter.sendMail(mailOptions);
 
-    console.log("password before: ", user.password);
+    // console.log("password before: ", user.password);
 
     return res.status(200).json({
       message: "Password reset mail sent successfully",
@@ -283,12 +314,17 @@ const resetPassword = async (req, res) => {
     3. find user based on token
     4. check if passwordResetToken expired
     5. change password
-    6. save user
-    7. send response
+    6. remove passwordResetToken and passwordResetExpiry from user
+    7. save user
+    8. send success status
   */
 
   const { passwordResetToken } = req.params;
   const { newPassword, conformPassword } = req.body;
+
+  passwordResetToken.trim();
+  newPassword.trim();
+  conformPassword.trim();
 
   if (!passwordResetToken) {
     return res.status(400).json({
@@ -321,9 +357,12 @@ const resetPassword = async (req, res) => {
 
     user.password = newPassword;
 
+    user.passwordResetToken = undefined;
+    user.passwordResetExpiry = undefined;
+
     await user.save();
 
-    console.log("password after: ", user.password);
+    // console.log("password after: ", user.password);
 
     return res.status(200).json({
       message: "password reset successfully",
@@ -341,8 +380,12 @@ const logout = async (req, res) => {
   /* 
   Algorithm for logout
 
-    1. check if user is logged in
-    2. clear cookie
+    1. get userId from req.user
+    2. find user with userId (if not found, return error)
+    3. set refreshToken to null in user
+    4. save user in db
+    5. clear cookies
+    6. send response
   */
 
   if (!req.user) {
@@ -351,7 +394,22 @@ const logout = async (req, res) => {
       success: false,
     });
   }
-  res.clearCookie("token");
+
+  const user = await User.findOne({ _id: req.user.id });
+
+  if (!user) {
+    return res.status(400).json({
+      message: "User not found",
+      success: false,
+    });
+  }
+
+  user.refreshToken = null;
+
+  await user.save();
+
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
 
   return res.status(202).json({
     message: "logged out successfully",
@@ -365,7 +423,7 @@ const profile = async (req, res) => {
 
     1. get userId from req.user
     2. find user with userId
-    3. get user excluding _id, password, passwordResetToken, passwordResetExpiry and verificationToken
+    3. get user excluding _id, password, passwordResetToken, passwordResetExpiry, verificationToken and refreshToken
       (because we don't want to send those to frontend)
     4. send response with user 
   */
@@ -379,7 +437,7 @@ const profile = async (req, res) => {
     }
 
     const user = await User.findById(userId).select(
-      "-_id -password -passwordResetToken -passwordResetExpiry -verificationToken"
+      "-_id -password -passwordResetToken -passwordResetExpiry -verificationToken -refreshToken"
     );
 
     if (!user) {

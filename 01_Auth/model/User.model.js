@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
     passwordResetExpiry: {
       type: Date,
     },
+    refreshToken: String,
   },
   {
     timestamps: true, // add createdAt and updatedAt fields
