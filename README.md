@@ -11,9 +11,9 @@ This project provides a robust backend for handling user authentication using **
 ✅ **User Registration:** Allows users to register and receive an email for verification.  
 ✅ **Email Verification:** Verifies user email via a token using **nodemailer** and **Mailtrap**.  
 ✅ **Login/Logout:** Handles user authentication with JWT tokens stored securely in cookies.  
-✅ **Password Hashing:** Passwords are hashed securely using **bcryptjs** before storing.
-✅ **Access Token and Refresh Token:** Using concepts like Access Token and Refresh Token for better security and control.
-✅ **JWT Tokens:** Implements stateless session management using JWT (to generate access and refresh tokens).
+✅ **Password Hashing:** Passwords are hashed securely using **bcryptjs** before storing.  
+✅ **Access Token and Refresh Token:** Using concepts like Access Token and Refresh Token for better security and control.  
+✅ **JWT Tokens:** Implements stateless session management using JWT (to generate access and refresh tokens).  
 ✅ **Password Reset:** Allows users to reset their passwords through a token sent via email.  
 ✅ **Profile Route:** Provides an endpoint to retrieve user profile information.
 
