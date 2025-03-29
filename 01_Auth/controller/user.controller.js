@@ -27,10 +27,6 @@ const registerUser = async (req, res) => {
       });
     }
 
-    name.trim();
-    email.trim();
-    password.trim();
-
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -96,9 +92,6 @@ const verifyUser = async (req, res) => {
   try {
     const { token } = req.params;
 
-    token.trim();
-    // console.log(token);
-
     if (!token) {
       return res.status(400).json({
         message: "Invalid token... Bad request...",
@@ -153,9 +146,6 @@ const loginUser = async (req, res) => {
         message: "Invalid email or password",
       });
     }
-
-    email.trim();
-    password.trim();
 
     const user = await User.findOne({ email });
 
@@ -255,8 +245,6 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    email.trim();
-
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -321,10 +309,6 @@ const resetPassword = async (req, res) => {
 
   const { passwordResetToken } = req.params;
   const { newPassword, conformPassword } = req.body;
-
-  passwordResetToken.trim();
-  newPassword.trim();
-  conformPassword.trim();
 
   if (!passwordResetToken) {
     return res.status(400).json({

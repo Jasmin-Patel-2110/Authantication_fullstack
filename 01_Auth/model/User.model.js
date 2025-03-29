@@ -6,9 +6,18 @@ import bcrypt from "bcryptjs";
 */
 const userSchema = new mongoose.Schema(
   {
-    name: String,
-    email: String,
-    password: String,
+    name: {
+      type: String,
+      trim: true,
+    },
+    email: {
+      type: String,
+      trim: true,
+    },
+    password: {
+      type: String,
+      trim: true,
+    },
     role: {
       type: String,
       enum: ["user", "admin"], // options for role field
@@ -27,7 +36,9 @@ const userSchema = new mongoose.Schema(
     passwordResetExpiry: {
       type: Date,
     },
-    refreshToken: String,
+    refreshToken: {
+      type: String,
+    },
   },
   {
     timestamps: true, // add createdAt and updatedAt fields
