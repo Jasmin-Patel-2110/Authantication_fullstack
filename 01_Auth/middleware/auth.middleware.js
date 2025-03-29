@@ -10,7 +10,7 @@ export const isLoggedIn = async (req, res, next) => {
 
     1. get accessToken and refreshToken from cookies
     2. if accessToken is not present, check if refreshToken is present
-      - if refreshToken is present, find user from db based on refreshToken
+      - if refreshToken is present, find user from db based on id from decoded data and refreshToken
       - if user is not found, return error
       - if user is found, generate new accessToken and refreshToken
       - store new accessToken and refreshToken in cookies
@@ -42,19 +42,25 @@ export const isLoggedIn = async (req, res, next) => {
         });
       }
 
+      const decodedData = jwt.verify(
+        refreshToken,
+        process.env.REFRESHTOKEN_SECRET
+      );
+
       // have refresh token. Find user from db based on refresh token
-      const user = await User.findOne({ refreshToken });
+      const user = await User.findOne({
+        _id: decodedData.id,
+        refreshToken: refreshToken,
+      });
 
       // check if user exist
       if (!user) {
         return res.status(400).json({
-          message: "token expired or user not found",
+          message: "Invalid refresh token",
         });
       }
 
-      resetTokens(user, req, res);
-
-      await user.save();
+      await resetTokens(user, req, res);
 
       req.user = { id: user._id, role: user.role };
     } else {
@@ -73,9 +79,7 @@ export const isLoggedIn = async (req, res, next) => {
         });
       }
 
-      resetTokens(user, req, res);
-
-      await user.save();
+      await resetTokens(user, req, res);
 
       req.user = { id: user._id, role: user.role };
     }
@@ -90,7 +94,7 @@ export const isLoggedIn = async (req, res, next) => {
   next(); // pass control to next middleware, controller or route handler
 };
 
-function resetTokens(user, req, res) {
+async function resetTokens(user, req, res) {
   /*
     Algorithm to reset tokens
 
@@ -115,6 +119,8 @@ function resetTokens(user, req, res) {
     process.env.ACCESSTOKEN_SECRET,
     { expiresIn: process.env.ACCESSTOKEN_EXPIRY }
   );
+
+  await user.save();
 
   const cookieOptions = {
     httpOnly: true,
