@@ -52,7 +52,7 @@ const registerUser = async (req, res) => {
       subject: "Verify your Email",
       text: "Please click on the following link - ",
       html: `
-      Verification Link: ${process.env.BASE_URL}/api/v1/user/verify/${user.verificationToken}
+      Verification Link: <a href="${process.env.BASE_URL}/api/v1/user/verify/${user.verificationToken}"> Click here to verify</a>
       </br>
       Verification Token: ${user.verificationToken}
       </br>
@@ -267,7 +267,7 @@ const forgotPassword = async (req, res) => {
       subject: "Verify your Password Reset",
       text: "Please click on the following link - ",
       html: `
-      Verification Link: ${process.env.BASE_URL}/api/v1/user/resetPassword/${user.passwordResetToken}
+      Verification Link: <a href="${process.env.BASE_URL}/api/v1/user/resetPassword/${user.passwordResetToken}"> Click here to verify password reset</a> 
       </br>
       password Reset Token: ${user.passwordResetToken}
       </br>

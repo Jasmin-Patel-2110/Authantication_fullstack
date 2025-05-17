@@ -12,7 +12,7 @@ dotenv.config();
 const port = process.env.PORT || 3000;
 const app = express();
 
-// app.use() is used to use middleware 😅
+// app.use() is used to use middleware
 
 /*
   CORS - Cross-Origin Resource Sharing
@@ -21,7 +21,7 @@ const app = express();
 */
 app.use(
   cors({
-    origin: process.env.BASE_URL,
+    origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE"], // methods ki permission
     allowedHeaders: ["Content-Type", "Authorization"], // headers ki permission
     credentials: true, // Agar cookies ya authentication headers use ho tab
