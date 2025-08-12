@@ -1,6 +1,4 @@
-# Backend only projects
-
-## 1. 🚀 Authentication Backend using Node.js, Express.js, and MongoDB (Basic)
+## 🚀 Authentication Backend using Node.js, Express.js, and MongoDB (Basic)
 
 This project provides a robust backend for handling user authentication using **Node.js**, **Express.js**, and **MongoDB**. It includes features such as user registration, email verification, secure login/logout, password reset, and user profile retrieval.
 
